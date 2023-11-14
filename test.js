@@ -8,9 +8,9 @@ const expect = chai.expect;
 
 chai.use(chaiHttp);
 
-describe("GET /todos", () => {
-  it("should return 200 /todos", async () => {
-    const res = await chai.request(server()).get("/todos");
+describe("GET /hello", () => {
+  it("should return 200 /hello", async () => {
+    const res = await chai.request(server()).get("/hello");
     res.should.be.html;
     expect(res.statusCode).to.equal(200);
   });
@@ -32,17 +32,36 @@ describe("POST /newtodo - add new todo", () => {
     // 準備
     const addData = {
       userId: 11,
-      id: 101,
+      id: 201,
       title: "new-todo",
       completed: false,
     };
     const res = await chai
       .request(server())
-      .post("/newtodo/11/101/new-todo/false");
+      .post("/newtodo/11/201/new-todo/false");
 
     //検証
     res.should.be.json;
-    console.log(res.body);
     res.body.should.deep.equal(addData);
+  });
+});
+describe("get /newtodo - add new todo", () => {
+  it("should return the JSON for addData", async () => {
+    // 準備
+    const addData = {
+      userId: 11,
+      id: 201,
+      title: "new-todo",
+      completed: false,
+    };
+    const res = await chai.request(server()).get("/todos").query(addData);
+
+    //検証
+    res.should.be.json;
+    // expect(res.body).should.deep.equal(addData);
+    res.body.should.have.property("userId").eql(11);
+    res.body.should.have.property("id").eql(201);
+    res.body.should.have.property("title").eql("new-todo");
+    res.body.should.have.property("completed").eql(false);
   });
 });

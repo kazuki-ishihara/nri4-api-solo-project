@@ -1,12 +1,11 @@
 const express = require("express");
 const { todos } = require("./data/jsonindex.js");
-console.log(todos[0]);
 
 function server() {
   const app = express();
   app.use(express.json());
 
-  app.get("/todos", (req, res) => {
+  app.get("/hello", (req, res) => {
     res.status(200).send("world");
   });
 
@@ -20,7 +19,6 @@ function server() {
   });
 
   app.post("/newtodo/:userId/:id/:title/:completed", (req, res) => {
-    console.log("-----------------------------------------------------");
     if (!req.params.compreted) {
       req.params.compreted = false;
     }
@@ -31,9 +29,13 @@ function server() {
       completed: req.params.compreted,
     };
 
-    console.log(data);
     todos.push(data);
     res.send(todos[todos.length - 1]);
+  });
+
+  app.get("/todos", (req, res) => {
+    getTodos = todos.filter((todo) => todo.id == req.query.id);
+    res.json(getTodos[0]);
   });
 
   return app;
